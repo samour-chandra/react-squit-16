@@ -1,8 +1,14 @@
+import OptionsItems from "./components/OpitonsItems";
 
-function Questions() {
+function Questions({ question, dispatch, answer }) {
   return (
     <div>
-      question
+      <h4>{question.question}</h4>
+      <OptionsItems
+        question={question}
+        dispatch={dispatch}
+        answer={answer}
+      />
     </div>
   );
 }
