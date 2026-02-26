@@ -25,7 +25,6 @@ function reducer(state, action) {
       return { ...state, status: "active" };
     case "newAnswer":
       const question = state.questions.at(state.index);
-      console.log(question);
       return {
         ...state,
         answer: action.payload,
