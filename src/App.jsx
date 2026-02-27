@@ -7,6 +7,7 @@ import StartScreen from "./StartScreen";
 import Questions from "./Questions";
 import NextButton from "./components/NextButton";
 import Progress from "./components/Progress";
+import FinishedScreen from "./components/FinishedScreen";
 const initialState = {
   questions: [],
   // loading,error,ready,active,finished
@@ -14,6 +15,7 @@ const initialState = {
   index: 0,
   answer: null,
   points: 0,
+  highScore: 0,
 };
 function reducer(state, action) {
   switch (action.type) {
@@ -35,18 +37,25 @@ function reducer(state, action) {
       };
     case "newQuestion":
       return { ...state, index: state.index + 1, answer: null };
+    case "finish":
+      return {
+        ...state,
+        status: "finished",
+        highScore:
+          state.points > state.highScore ? state.points : state.highScore,
+      };
     default:
       throw new Error("Unknown action");
   }
 }
 function App() {
-  const [{ status, questions, index, answer, points }, dispatch] = useReducer(
+  const [{ status, questions, index, answer, points,highScore }, dispatch] = useReducer(
     reducer,
     initialState,
   );
 
   const numQuestions = questions.length;
-  const totalPoints = questions.reduce((acc,num)=> acc + num.points,0)
+  const totalPoints = questions.reduce((acc, num) => acc + num.points, 0);
 
   useEffect(function () {
     fetch("http://localhost:8000/questions")
@@ -76,8 +85,16 @@ function App() {
               dispatch={dispatch}
               answer={answer}
             />
-            <NextButton dispatch={dispatch} answer={answer} />
+            <NextButton
+              dispatch={dispatch}
+              answer={answer}
+              numQuestions={numQuestions}
+              index={index}
+            />
           </>
+        )}
+        {status === "finished" && (
+          <FinishedScreen points={points} totalPoints={totalPoints} highScore={highScore} />
         )}
       </MainQuiz>
     </div>
